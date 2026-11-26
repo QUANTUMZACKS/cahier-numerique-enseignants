@@ -1,5 +1,5 @@
 name: Android Release
-run: mkdir -p android/app && echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/cahier-de-bord.jks
+
 on:
   workflow_dispatch:
 
@@ -24,7 +24,7 @@ jobs:
           java-version: 17
 
       - name: Decode Keystore
-        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/cahier-de-bord.jks
+        run: mkdir -p android/app && echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/cahier-de-bord.jks
 
       - name: Grant execute permission for gradlew
         run: chmod +x android/gradlew
