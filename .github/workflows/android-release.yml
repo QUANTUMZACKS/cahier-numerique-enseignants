@@ -19,7 +19,7 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           chmod +x android/gradlew
-          ./gradlew assembleRelease
+          ./android/gradlew -p android assembleRelease
       - uses: actions/upload-artifact@v4
         with:
           name: Cahier-de-Bord-Numerique-APK
