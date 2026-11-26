@@ -1,5 +1,5 @@
 name: Android Release
-
+run: mkdir -p android/app && echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/cahier-de-bord.jks
 on:
   workflow_dispatch:
 
