@@ -20,23 +20,28 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Install Build Tools 29.0.3
-        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;29.0.3"
+      - name: Creer Nouveau Keystore
+        run: |
+          keytool -genkeypair -v -keystore mykey.jks -alias mykey -keyalg RSA -keysize 2048 -validity 10000 -storepass 123456 -keypass 123456 -dname "CN=Cahier de Bord, OU=App, O=Cahier, L=Hounde, ST=Tuy, C=BF"
 
       - name: Build Release Non Signe
         run: gradle assembleRelease
 
-      - name: Sign APK
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          alias: ${{ secrets.ANDROID_KEY_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      - name: Signer APK
+        run: |
+          BUILD_TOOLS=$ANDROID_HOME/build-tools/34.0.0
+          $BUILD_TOOLS/zipalign -v -p 4 app/build/outputs/apk/release/app-release-unsigned.apk app/build/outputs/apk/release/app-release-aligned.apk
+          $BUILD_TOOLS/apksigner sign --ks mykey.jks --ks-key-alias mykey --ks-pass pass:123456 --key-pass pass:123456 --out app/build/outputs/apk/release/app-release-signed.apk app/build/outputs/apk/release/app-release-aligned.apk
+          $BUILD_TOOLS/apksigner verify app/build/outputs/apk/release/app-release-signed.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Cahier-de-Bord-Numerique-APK
           path: app/build/outputs/apk/release/app-release-signed.apk
+
+      - name: Upload Keystore IMPORTANT A GARDER
+        uses: actions/upload-artifact@v4
+        with:
+          name: KEYSTORE-A-GARDER
+          path: mykey.jks
