@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId 'bf.quantumzacks.cahierdebord'
-        minSdk 23
+        minSdk 21 // Android 5.0 à Android 15 = tous les téléphones
         targetSdk 35
         versionCode 1
         versionName '1.0.0'
